@@ -47,7 +47,13 @@ workflows:
 
   build_and_test:
     jobs:
-      - build
+      - build:
+          filters:
+            branches:
+              only: /main\/.*/
       - testlinks:
+          filters:
+            branches:
+              only: /main\/.*/
           requires:
             - build
