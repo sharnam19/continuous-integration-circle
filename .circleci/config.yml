@@ -10,50 +10,18 @@ jobs:
       - checkout
 
       - run:
-          name: build dependencies
-          command: bundle install
-
-      - run:
           name: build the jekyll site
-          command: bundle exec jekyll build
+          command: "curl --location --request POST 'https://api.github.com/repos/sharnam19/continuous-integration-circle/deployments' \
+--header 'Accept: application/vnd.github.v3+json' \
+--header 'Authorization: Bearer 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' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    \"ref\":\"1.0.0\",
+    \"task\":\"deploy\",
+    \"auto_merge\": true,
+    \"environment\": \"Prod\",
+    \"description\": \"CircleCI Deployment -4th March - Tag \"}'"
 
       - run:
           name: notify build is finished
           command: echo "The build is finished!"
-          
-  testlinks:
-    executor: ci-executor
-    steps:
-      - checkout
-
-      - run:
-          name: build dependencies
-          command: bundle install
-
-      - run:
-          name: build the jekyll site
-          command: bundle exec jekyll build
-
-      - run:
-          name: notify build is finished
-          command: echo "The build is finished!"
-
-      - run:
-          name: notify test is finished
-          command: echo "The test is completed!"
-
-workflows:
-  version: 2.1
-
-  build_and_test:
-    jobs:
-      - build:
-          filters:
-            branches:
-              only: /main/
-      - testlinks:
-          filters:
-            branches:
-              only: /main/
-          requires:
-            - build
